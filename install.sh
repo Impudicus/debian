@@ -269,7 +269,7 @@ main() {
                 shift 1
                 ;;
             -d | --drivers)
-                if [[ -ne "${2}" ]]; then
+                if [[ ! "${2}" ]]; then
                     printLog "error" "Missing driver name, use --help for further information."
                     exit 1
                 fi
@@ -285,7 +285,7 @@ main() {
                 shift 2
                 ;;
             -g | --grub)
-                if [[ -ne "${2}" ]]; then
+                if [[ ! "${2}" ]]; then
                     printLog "error" "Missing grub theme, use --help for further information."
                     exit 1
                 fi
@@ -301,7 +301,7 @@ main() {
                 shift 2
                 ;;
             -r | --release)
-                if [[ -ne "${2}" ]]; then
+                if [[ ! "${2}" ]]; then
                     printLog "error" "Missing release name, use --help for further information."
                     exit 1
                 fi
@@ -320,7 +320,7 @@ main() {
                 shift 2
                 ;;
             -t | --theme)
-                if [[ -ne "${2}" ]]; then
+                if [[ ! "${2}" ]]; then
                     printLog "error" "Missing gtk theme, use --help for further information."
                     exit 1
                 fi
