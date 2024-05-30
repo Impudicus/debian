@@ -15,7 +15,7 @@ runInstall() {
             cat "${config_dir}/apt/unstable.list" > "/etc/apt/sources.list"
             cat "${config_dir}/apt/bookworm.list" > "/etc/apt/sources.list.d/bookworm.list"
             ;;
-        *)
+        stable)
             cat "${config_dir}/apt/bookworm.list" > "/etc/apt/sources.list"
             ;;
     esac
@@ -334,7 +334,6 @@ main() {
                 exit 1
                 ;;
         esac
-        shift
     done
 
     # run
