@@ -21,12 +21,11 @@ runInstall() {
     esac
 
     # apt update
-    apt update > /dev/null 2> /dev/null
+    apt update
     apt upgrade --yes
     apt full-upgrade --yes
 
     # install requirements
-    apt update > /dev/null 2> /dev/null
     apt install --yes \
         bash-completion \
         curl \
@@ -38,7 +37,6 @@ runInstall() {
         wireguard
 
     # install firmware
-    apt update > /dev/null 2> /dev/null
     apt install --yes \
         firmware-linux \
         firmware-linux-nonfree \
@@ -49,7 +47,6 @@ runInstall() {
     # install drivers
     case "${install_driver}" in
         amd)
-            apt update > /dev/null 2> /dev/null
             apt install --yes \
                 firmware-amd-graphics \
                 libgl1-mesa-dri \
@@ -58,7 +55,6 @@ runInstall() {
                 xserver-xorg-video-amdgpu
             ;;
         vmware-tools)
-            apt update > /dev/null 2> /dev/null
             apt install --yes \
                 open-vm-tools-desktop \
                 open-vm-tools
@@ -66,7 +62,6 @@ runInstall() {
     esac
 
     # install gnome
-    apt update > /dev/null 2> /dev/null
     apt install --yes \
         gnome-session \
         gnome-shell \
@@ -85,7 +80,6 @@ runInstall() {
         wpasupplicant
 
     # install tools
-    apt update > /dev/null 2> /dev/null
     apt install --yes \
         brasero \
         eog \
@@ -95,7 +89,6 @@ runInstall() {
         vlc
 
     # install security-tools
-    apt update > /dev/null 2> /dev/null
     apt install --yes \
         clamav \
         clamtk
@@ -112,7 +105,6 @@ runInstall() {
 
         curl --silent --show-error "https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/spotify.gpg"
         cat "${config_dir}/apt/spotify.list" > "/etc/apt/sources.list.d/spotify.list"
-        apt update > /dev/null 2> /dev/null
         apt install --yes \
             spotify-client
 
@@ -122,7 +114,6 @@ runInstall() {
 
         curl --silent --show-error "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/vscode.gpg"
         cat "${config_dir}/apt/vscode.list" > "/etc/apt/sources.list.d/vscode.list"
-        apt update > /dev/null 2> /dev/null
         apt install --yes \
             code
     fi
@@ -167,7 +158,6 @@ runConfig() {
         rm --recusive --force "/tmp/colloid-icon-theme"
 
         # gtk theme
-        apt update > /dev/null
         apt install --yes \
             gnome-themes-extra \
             gtk2-engines-murrine
