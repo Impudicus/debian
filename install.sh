@@ -105,6 +105,7 @@ runInstall() {
 
         curl --silent --show-error "https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/spotify.gpg"
         cat "${config_dir}/apt/spotify.list" > "/etc/apt/sources.list.d/spotify.list"
+        apt update
         apt install --yes \
             spotify-client
 
@@ -114,14 +115,10 @@ runInstall() {
 
         curl --silent --show-error "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/vscode.gpg"
         cat "${config_dir}/apt/vscode.list" > "/etc/apt/sources.list.d/vscode.list"
+        apt update
         apt install --yes \
             code
     fi
-}
-
-runCleanup() {
-    apt autoremove --yes > /dev/null
-    apt clean > /dev/null
 }
 
 runConfig() {
@@ -196,6 +193,11 @@ runConfig() {
     # user config - root
     cat "${config_dir}/.bash_aliases" > "/root/.bash_aliases"
     cat "${config_dir}/.bashrc" > "/root/.bashrc"
+}
+
+runCleanup() {
+    apt autoremove --yes > /dev/null
+    apt clean > /dev/null
 }
 
 printLog() {
@@ -339,7 +341,7 @@ main() {
     # run
     runInstall
     runConfig
-    runConfig
+    runCleanup
 
     printLog "okay" "Script executed successfully."
 }
