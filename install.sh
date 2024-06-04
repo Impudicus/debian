@@ -87,7 +87,7 @@ runInstall() {
         thunderbird \
         vlc
 
-    wget "https://www.google.com/chrome/next-steps.html?brand=JJTC&statcb=0&installdataindex=empty&defaultbrowser=0#" --output-document "/tmp/chrome.deb"
+    wget "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" --output-document "/tmp/chrome.deb"
     apt install -f "/tmp/chrome.deb"
     rm --force "/tmp/chrome.deb"
 
