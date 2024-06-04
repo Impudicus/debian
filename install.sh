@@ -87,9 +87,13 @@ runInstall() {
         thunderbird \
         vlc
 
-    wget "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" --output-document "/tmp/chrome.deb"
-    apt install -f "/tmp/chrome.deb"
-    rm --force "/tmp/chrome.deb"
+    local package_name="chrome"
+    local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
+    if [[ ! "${package_installed}" ]]; then
+        wget "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" --output-document "/tmp/chrome.deb"
+        apt install -f "/tmp/chrome.deb"
+        rm --force "/tmp/chrome.deb"
+    fi
 
     # install security-tools
     apt install --yes \
