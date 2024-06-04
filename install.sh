@@ -84,9 +84,12 @@ runInstall() {
         brasero \
         eog \
         evince \
-        firefox-esr \
         thunderbird \
         vlc
+
+    wget "https://www.google.com/chrome/next-steps.html?brand=JJTC&statcb=0&installdataindex=empty&defaultbrowser=0#" --output-document "/tmp/chrome.deb"
+    apt install --force "/tmp/chrome.deb"
+    rm --force "/tmp/chrome.deb"
 
     # install security-tools
     apt install --yes \
@@ -99,7 +102,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://github.com/balena-io/etcher/releases/download/v1.18.11/balena-etcher_1.18.11_amd64.deb" --output-document "/tmp/balena-etcher.deb"
-            dpkg --install "/tmp/balena-etcher.deb"
+            apt install --force "/tmp/balena-etcher.deb"
             rm --force "/tmp/balena-etcher.deb"
         fi
 
@@ -107,7 +110,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://discord.com/api/download?platform=linux&format=deb" --output-document "/tmp/discord.deb"
-            dpkg --install "/tmp/discord.deb"
+            apt install --force "/tmp/discord.deb"
             rm --force "/tmp/discord.deb"
         fi
 
@@ -125,7 +128,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://repo.steampowered.com/steam/archive/precise/steam_latest.deb" --output-document "/tmp/steam.deb"
-            dpkg --install "/tmp/steam.deb"
+            apt install --force "/tmp/steam.deb"
             rm --force "/tmp/steam.deb"
         fi
 
