@@ -88,7 +88,7 @@ runInstall() {
         vlc
 
     wget "https://www.google.com/chrome/next-steps.html?brand=JJTC&statcb=0&installdataindex=empty&defaultbrowser=0#" --output-document "/tmp/chrome.deb"
-    apt install --force "/tmp/chrome.deb"
+    apt install --files "/tmp/chrome.deb"
     rm --force "/tmp/chrome.deb"
 
     # install security-tools
