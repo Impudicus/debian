@@ -219,8 +219,8 @@ runConfig() {
 }
 
 runCleanup() {
-    apt autoremove --yes > /dev/null
-    apt clean > /dev/null
+    apt autoremove --yes 2>/dev/null
+    apt clean 2>/dev/null
 }
 
 printLog() {
