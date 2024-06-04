@@ -95,29 +95,49 @@ runInstall() {
 
     # install apps
     if [[ "${install_apps}" ]]; then
-        wget "https://github.com/balena-io/etcher/releases/download/v1.18.11/balena-etcher_1.18.11_amd64.deb" --output-document "/tmp/balena-etcher.deb"
-        dpkg --install "/tmp/balena-etcher.deb"
-        rm --force "/tmp/balena-etcher.deb"
+        local package_name="balena-etcher"
+        local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
+        if [[ ! "${package_installed}" ]]; then
+            wget "https://github.com/balena-io/etcher/releases/download/v1.18.11/balena-etcher_1.18.11_amd64.deb" --output-document "/tmp/balena-etcher.deb"
+            dpkg --install "/tmp/balena-etcher.deb"
+            rm --force "/tmp/balena-etcher.deb"
+        fi
 
-        wget "https://discord.com/api/download?platform=linux&format=deb" --output-document "/tmp/discord.deb"
-        dpkg --install "/tmp/discord.deb"
-        rm --force "/tmp/discord.deb"
+        local package_name="discord"
+        local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
+        if [[ ! "${package_installed}" ]]; then
+            wget "https://discord.com/api/download?platform=linux&format=deb" --output-document "/tmp/discord.deb"
+            dpkg --install "/tmp/discord.deb"
+            rm --force "/tmp/discord.deb"
+        fi
 
-        curl --silent --show-error "https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/spotify.gpg"
-        cat "${config_dir}/apt/spotify.list" > "/etc/apt/sources.list.d/spotify.list"
-        apt update
-        apt install --yes \
-            spotify-client
+        local package_name="spotify-client"
+        local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
+        if [[ ! "${package_installed}" ]]; then
+            curl --silent --show-error "https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/spotify.gpg"
+            cat "${config_dir}/apt/spotify.list" > "/etc/apt/sources.list.d/spotify.list"
+            apt update
+            apt install --yes \
+                spotify-client
+        fi
 
-        wget "https://repo.steampowered.com/steam/archive/precise/steam_latest.deb" --output-document "/tmp/steam.deb"
-        dpkg --install "/tmp/steam.deb"
-        rm --force "/tmp/steam.deb"
+        local package_name="steam"
+        local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
+        if [[ ! "${package_installed}" ]]; then
+            wget "https://repo.steampowered.com/steam/archive/precise/steam_latest.deb" --output-document "/tmp/steam.deb"
+            dpkg --install "/tmp/steam.deb"
+            rm --force "/tmp/steam.deb"
+        fi
 
-        curl --silent --show-error "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/vscode.gpg"
-        cat "${config_dir}/apt/vscode.list" > "/etc/apt/sources.list.d/vscode.list"
-        apt update
-        apt install --yes \
-            code
+        local package_name="code"
+        local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
+        if [[ ! "${package_installed}" ]]; then
+            curl --silent --show-error "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor --yes --output "/etc/apt/trusted.gpg.d/vscode.gpg"
+            cat "${config_dir}/apt/vscode.list" > "/etc/apt/sources.list.d/vscode.list"
+            apt update
+            apt install --yes \
+                code
+        fi
     fi
 }
 
@@ -126,15 +146,15 @@ runConfig() {
 
     # add grub theme
     if [[ "${install_grub_theme}" ]]; then
-        local grub_dir="/boot/grub/themes/${install_grub}"
+        local grub_dir="/boot/grub/themes/${install_grub_theme}"
         mkdir --parents "${grub_dir}"
 
-        wget "https://github.com/AdisonCavani/distro-grub-themes/releases/download/v3.2/${install_grub}.tar" --output-document "/tmp/${install_grub}.tar"
-        tar --extract --verbose --file "/tmp/${install_grub}.tar" --directory "${grub_dir}"
-        rm --force "/tmp/${install_grub}.tar"
+        wget "https://github.com/AdisonCavani/distro-grub-themes/releases/download/v3.2/${install_grub_theme}.tar" --output-document "/tmp/${install_grub_theme}.tar"
+        tar --extract --verbose --file "/tmp/${install_grub_theme}.tar" --directory "${grub_dir}"
+        rm --force "/tmp/${install_grub_theme}.tar"
 
         cat "${config_dir}/grub/default.cfg" > "/etc/default/grub"
-        echo "GRUB_THEME='/boot/grub/themes/${install_grub}/theme.txt'" >> "/etc/default/grub"
+        echo "GRUB_THEME='/boot/grub/themes/${install_grub_theme}/theme.txt'" >> "/etc/default/grub"
 
         update-grub > /dev/null
     fi
@@ -152,7 +172,7 @@ runConfig() {
             cd "/tmp/colloid-icon-theme"
             bash "/tmp/colloid-icon-theme/install.sh" --dest "/usr/share/icons" --scheme "nord"
         )
-        rm --recusive --force "/tmp/colloid-icon-theme"
+        rm --recursive --force "/tmp/colloid-icon-theme"
 
         # gtk theme
         apt install --yes \
@@ -164,7 +184,7 @@ runConfig() {
             cd "/tmp/colloid-gtk-theme"
             bash "/tmp/colloid-gtk-theme/install.sh" --dest "/usr/share/themes" --tweaks normal --libadwaita
         )
-        rm --recusive --force "/tmp/colloid-gtk-theme"
+        rm --recursive --force "/tmp/colloid-gtk-theme"
 
         # wallpaper
         wget "https://raw.githubusercontent.com/Impudicus/wallpaper/main/linux/3840x2160.Unix.jpg" --directory-prefix "/usr/share/wallpapers"
@@ -317,8 +337,11 @@ main() {
                     exit 1
                 fi
                 case "${2}" in
-                    dark | light)
-                        install_gtk_theme="${2}"
+                    dark)
+                        install_gtk_theme="Dark"
+                        ;;
+                    light)
+                        install_gtk_theme="Light"
                         ;;
                     *)
                         printLog "error" "Invalid gtk theme '${2}'."
