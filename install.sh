@@ -83,17 +83,10 @@ runInstall() {
     apt install --yes \
         brasero \
         eog \
+        firefox-esr \
         evince \
         thunderbird \
         vlc
-
-    local package_name="google-chrome-stable"
-    local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
-    if [[ ! "${package_installed}" ]]; then
-        wget "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" --output-document "/tmp/chrome.deb"
-        apt install -f "/tmp/chrome.deb"
-        rm --force "/tmp/chrome.deb"
-    fi
 
     # install security-tools
     apt install --yes \
@@ -106,7 +99,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://github.com/balena-io/etcher/releases/download/v1.18.11/balena-etcher_1.18.11_amd64.deb" --output-document "/tmp/balena-etcher.deb"
-            apt install --force "/tmp/balena-etcher.deb"
+            apt install --fix-broken "/tmp/balena-etcher.deb"
             rm --force "/tmp/balena-etcher.deb"
         fi
 
@@ -114,7 +107,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://discord.com/api/download?platform=linux&format=deb" --output-document "/tmp/discord.deb"
-            apt install --force "/tmp/discord.deb"
+            apt install --fix-broken "/tmp/discord.deb"
             rm --force "/tmp/discord.deb"
         fi
 
@@ -132,7 +125,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://repo.steampowered.com/steam/archive/precise/steam_latest.deb" --output-document "/tmp/steam.deb"
-            apt install --force "/tmp/steam.deb"
+            apt install --fix-broken "/tmp/steam.deb"
             rm --force "/tmp/steam.deb"
         fi
 
