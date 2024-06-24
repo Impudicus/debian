@@ -63,6 +63,14 @@ runInstall() {
 
     # install window manager
     case "${install_window_manager}" in
+        budgie)
+            apt install --yes \
+                budgie-desktop
+            ;;
+        cinnamon)
+            apt install --yes \
+                cinnamon
+            ;;
         gnome)
             apt install --yes \
                 eog \
@@ -198,14 +206,14 @@ runConfig() {
         wget "https://raw.githubusercontent.com/Impudicus/wallpaper/main/linux/3840x2160.Unix.jpg" --directory-prefix "/usr/share/wallpapers"
     fi
 
-    # config network
-    cat "${config_dir}/network/interfaces" > "/etc/network/interfaces"
-    systemctl disable networking
-    systemctl stop networking
+    # # config network
+    # cat "${config_dir}/network/interfaces" > "/etc/network/interfaces"
+    # systemctl disable networking
+    # systemctl stop networking
 
-    cat "${config_dir}/network/NetworkManager.conf" > "/etc/NetworkManager/NetworkManager.conf"
-    systemctl enable NetworkManager
-    systemctl start NetworkManager
+    # cat "${config_dir}/network/NetworkManager.conf" > "/etc/NetworkManager/NetworkManager.conf"
+    # systemctl enable NetworkManager
+    # systemctl start NetworkManager
 
     # config sudo
     echo "${default_user} ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/default-user-no-password"
@@ -214,9 +222,9 @@ runConfig() {
     cat "${config_dir}/.bash_aliases" > "/home/${default_user}/.bash_aliases"
     cat "${config_dir}/.bashrc" > "/home/${default_user}/.bashrc"
     cat "${config_dir}/.profile" > "/home/${default_user}/.profile"
-    if [[ "${install_gtk_theme}" ]]; then
-        echo "export GTK_THEME='Colloid-${install_gtk_theme}'" >> "/home/${default_user}/.profile"
-    fi
+    # if [[ "${install_gtk_theme}" ]]; then
+    #     echo "export GTK_THEME='Colloid-${install_gtk_theme}'" >> "/home/${default_user}/.profile"
+    # fi
 
     # user config - root
     cat "${config_dir}/.bash_aliases" > "/root/.bash_aliases"
@@ -262,7 +270,7 @@ printHelp() {
     printf "  -t, --theme       light|dark              Add selected gtk scheme.\n"
     printf "\n"
     printf "Window Managers:\n"
-    printf "  gnome|kde|xfce                            Use selected window-manager.\n"
+    printf "  budgie|cinnamon|gnome|kde|xfce            Use selected window-manager.\n"
     printf "\n"
 }
 
@@ -364,7 +372,7 @@ main() {
                 esac
                 shift 2
                 ;;
-            gnome|xfce)
+            budgie|cinnamon|gnome|xfce)
                 install_window_manager="${1}"
                 break
                 ;;
