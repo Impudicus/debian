@@ -365,7 +365,7 @@ main() {
                 shift 2
                 ;;
             gnome|xfce)
-                install_window_manager="${2}"
+                install_window_manager="${1}"
                 break
                 ;;
             -h | --help)
