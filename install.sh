@@ -263,6 +263,7 @@ printHelp() {
     printf "\n"
     printf "Window Managers:\n"
     printf "  gnome|kde|xfce                            Use selected window-manager.\n"
+    printf "\n"
 }
 
 main() {
