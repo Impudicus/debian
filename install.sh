@@ -61,30 +61,38 @@ runInstall() {
             ;;
     esac
 
-    # install gnome
-    apt install --yes \
-        gnome-session \
-        gnome-shell \
-        gnome-calculator \
-        gnome-disk-utility \
-        gnome-shell-extensions \
-        gnome-control-center \
-        gnome-system-monitor \
-        gnome-terminal \
-        gnome-tweaks \
-        nautilus \
-            nautilus-admin \
-            nautilus-extension-gnome-terminal \
-        network-manager-gnome \
-        remmina \
-        wpasupplicant
+    # install window manager
+    case "${install_window_manager}" in
+        gnome)
+            apt install --yes \
+                eog \
+                evince \
+                gnome-session \
+                gnome-shell \
+                gnome-calculator \
+                gnome-disk-utility \
+                gnome-shell-extensions \
+                gnome-control-center \
+                gnome-system-monitor \
+                gnome-terminal \
+                gnome-tweaks \
+                nautilus \
+                    nautilus-admin \
+                    nautilus-extension-gnome-terminal \
+                network-manager-gnome \
+                remmina \
+                wpasupplicant
+            ;;
+        xfce)
+            apt install --yes \
+                xfce4
+            ;;
+    esac
 
     # install tools
     apt install --yes \
         brasero \
-        eog \
         firefox-esr \
-        evince \
         thunderbird \
         vlc
 
@@ -243,7 +251,7 @@ printLog() {
     esac
 }
 printHelp() {
-    printf "Usage: ${script_name} [OPTIONS]\n"
+    printf "Usage: ${script_name} [OPTIONS] WINDOWMANAGER\n"
     printf "Options:\n"
     printf "  -a, --apps                                Install additional apps, like balena etcher, steam and vs-code.\n"
     printf "  -d, --drivers     amd|vmware-tools        Install additional drivers.\n"
@@ -253,6 +261,8 @@ printHelp() {
     printf "                    trixie|unstable         Use backport repositories.\n"
     printf "  -t, --theme       light|dark              Add selected gtk scheme.\n"
     printf "\n"
+    printf "Window Managers:\n"
+    printf "  gnome|kde|xfce                            Use selected window-manager.\n"
 }
 
 main() {
@@ -274,6 +284,7 @@ main() {
     install_driver=''
     install_grub_theme=''
     install_gtk_theme=''
+    install_window_manager=''
 
     # parameters
     while [[ $# -gt 0 ]]; do
@@ -352,6 +363,10 @@ main() {
                 esac
                 shift 2
                 ;;
+            gnome|xfce)
+                install_window_manager="${2}"
+                break
+                ;;
             -h | --help)
                 printHelp
                 exit 0
@@ -362,6 +377,11 @@ main() {
                 ;;
         esac
     done
+
+    if [[ ! "${install_window_manager}" ]]; then
+        printLog "error" "Missing window manager, use --help for further information."
+        exit 1
+    fi
 
     # run
     runInstall
