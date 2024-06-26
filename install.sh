@@ -63,14 +63,6 @@ runInstall() {
 
     # install window manager
     case "${install_window_manager}" in
-        budgie)
-            apt install --yes \
-                budgie-desktop
-            ;;
-        cinnamon)
-            apt install --yes \
-                cinnamon
-            ;;
         gnome)
             apt install --yes \
                 eog \
@@ -91,9 +83,10 @@ runInstall() {
                 remmina \
                 wpasupplicant
             ;;
-        xfce)
+        kde)
             apt install --yes \
-                xfce4
+                kde-plasma-desktop \
+                okular
             ;;
     esac
 
@@ -115,7 +108,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://github.com/balena-io/etcher/releases/download/v1.18.11/balena-etcher_1.18.11_amd64.deb" --output-document "/tmp/balena-etcher.deb"
-            apt install --fix-broken "/tmp/balena-etcher.deb"
+            apt install --yes --fix-broken "/tmp/balena-etcher.deb"
             rm --force "/tmp/balena-etcher.deb"
         fi
 
@@ -123,7 +116,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://discord.com/api/download?platform=linux&format=deb" --output-document "/tmp/discord.deb"
-            apt install --fix-broken "/tmp/discord.deb"
+            apt install --yes --fix-broken "/tmp/discord.deb"
             rm --force "/tmp/discord.deb"
         fi
 
@@ -141,7 +134,7 @@ runInstall() {
         local package_installed=$(dpkg-query --show --showformat='${db:Status-Status}' "${package_name}" 2>/dev/null)
         if [[ ! "${package_installed}" ]]; then
             wget "https://repo.steampowered.com/steam/archive/precise/steam_latest.deb" --output-document "/tmp/steam.deb"
-            apt install --fix-broken "/tmp/steam.deb"
+            apt install --yes --fix-broken "/tmp/steam.deb"
             rm --force "/tmp/steam.deb"
         fi
 
@@ -206,14 +199,14 @@ runConfig() {
         wget "https://raw.githubusercontent.com/Impudicus/wallpaper/main/linux/3840x2160.Unix.jpg" --directory-prefix "/usr/share/wallpapers"
     fi
 
-    # # config network
-    # cat "${config_dir}/network/interfaces" > "/etc/network/interfaces"
-    # systemctl disable networking
-    # systemctl stop networking
+    # config network
+    cat "${config_dir}/network/interfaces" > "/etc/network/interfaces"
+    systemctl disable networking
+    systemctl stop networking
 
-    # cat "${config_dir}/network/NetworkManager.conf" > "/etc/NetworkManager/NetworkManager.conf"
-    # systemctl enable NetworkManager
-    # systemctl start NetworkManager
+    cat "${config_dir}/network/NetworkManager.conf" > "/etc/NetworkManager/NetworkManager.conf"
+    systemctl enable NetworkManager
+    systemctl start NetworkManager
 
     # config sudo
     echo "${default_user} ALL=(ALL:ALL) NOPASSWD: ALL" > "/etc/sudoers.d/default-user-no-password"
@@ -270,7 +263,7 @@ printHelp() {
     printf "  -t, --theme       light|dark              Add selected gtk scheme.\n"
     printf "\n"
     printf "Window Managers:\n"
-    printf "  budgie|cinnamon|gnome|kde|xfce            Use selected window-manager.\n"
+    printf "  gnome|kde                                 Use selected window-manager.\n"
     printf "\n"
 }
 
@@ -372,7 +365,7 @@ main() {
                 esac
                 shift 2
                 ;;
-            budgie|cinnamon|gnome|xfce)
+            gnome|kde)
                 install_window_manager="${1}"
                 break
                 ;;
